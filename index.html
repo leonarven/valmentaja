@@ -1,0 +1,152 @@
+<html>
+	<body>
+		<script type="text/javascript">
+
+			'use strict';
+
+			class Valmentaja {
+
+				running = false;
+
+				timeout_ms = 1000;
+
+				constructor( sentenceGenerator ) {
+
+					this.sentenceGenerator = sentenceGenerator;
+
+				}
+
+				start() {
+
+					if (!this.sentenceGenerator) return;
+
+					this.running = true;
+
+					this.loop();
+				}
+
+				stop() {
+
+					this.running = false;
+				}
+
+				async loop() {
+
+					if (!this.running) return;
+
+					try {
+	
+						await this.run();
+
+						setTimeout(() => this.loop(), this.timeout_ms );
+
+					} catch (error) {
+
+						console.error( error );
+
+						debugger;
+
+						this.stop();
+					}
+				}
+
+				async run() {
+
+					var sentence = this.sentenceGenerator();
+
+					if (!sentence || sentence.length == 0) return;
+
+					await this.say( sentence );
+				}
+
+				async say( sentence ) {
+
+					await Valmentaja.sentenceSayerConsoleLog( sentence );
+				}
+
+				get speed() {
+					return this.timeout_ms;
+				}
+
+				set speed( timeout_ms ) {
+					this.timeout_ms = timeout_ms;
+				}
+
+				static async sentenceSayerConsoleLog( sentence ) {
+
+					console.log( Valmentaja.sentenceToString( sentence ));
+
+				}
+				
+				static sentenceToString( sentence ) {
+
+					var string = "";
+					for (var i = 0; i < sentence.length; i++) {
+						string += sentence[ i ];
+
+						if (i == sentence.length - 2) string += " ja ";
+						else if (i < sentence.length - 2 ) string += ", ";
+					}
+
+					if (sentence.prefix) string = sentence.prefix + " " + string;
+
+					if (string.length > 0) string = string[0].toUpperCase() + string.substr( 1 );
+
+					return string;
+				}
+			}
+
+			/******************/
+
+			function buildSentence( word_sets, max_length = 1, min_length = 1, sentence = [] ) {
+
+				if (!(min_length >= 0)) return;
+				if (!(min_length <= max_length)) return;
+
+				var count = max_length - min_length + 1;
+
+				count = Math.floor( count * Math.random() );
+
+				var words = word_sets[ parseInt( word_sets.length * Math.random()) ];
+
+				for (var i = 0; i < count; i++) {
+
+					var idx = parseInt( Math.random() * words.length );
+					
+					sentence.push( words[idx] );
+				}
+
+				return sentence;
+			}
+
+			/******************/
+
+			const hits_singles = [ "suora", "koukku", "uppari", "kyynärpää yltä", "kyynärpää alta", "polvi", "kiertopotku" ];
+
+			const hits_sides = hits_singles.reduce(( sides, hit ) => {
+
+				return sides.push( "vasen " + hit ), sides.push( "oikea " +  hit ), sides;
+
+			}, []);
+
+			const hits_sameside = hits_singles.map( v => v );
+
+			const word_sets = [ hits_singles, hits_sides, hits_sameside ];
+
+			const valmentaja = new Valmentaja(() => {
+
+				var set = word_sets[ parseInt( Math.random() * word_sets.length ) ];
+			
+				var sentence = buildSentence([ set ], 2, 0 );
+
+				if (set == hits_sameside) sentence.prefix = "Saman puolen";
+
+				return sentence;
+			});
+
+			valmentaja.speed = 2500; // 2.5s
+
+			setTimeout(() => valmentaja.start(), 100);
+		</script>
+	</body>
+</html>
