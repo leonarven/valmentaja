@@ -3,7 +3,8 @@
 	"short_name": "Valmentaja",
 	"description": "Valmentaja",
 
-	"start_url": "index.html",
+	"id": "/index.html",
+	"start_url": "/index.html",
 
 	"lang":"fi-FI",
 	"display_override": [ "fullscreen", "minimal-ui" ],
