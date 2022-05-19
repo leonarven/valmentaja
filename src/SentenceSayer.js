@@ -6,7 +6,7 @@
 
 		disabled = false;
 
-		static sentenceToString( sentence ) {
+		static sentenceToString( sentence = [] ) {
 
 			var string = "";
 			for (var i = 0; i < sentence.length; i++) {
@@ -28,6 +28,8 @@
 
 		async say( sentence ) {
 
+			if (!sentence) return;
+
 			console.log( SentenceSayer.sentenceToString( sentence ));
 		}
 	}
@@ -43,10 +45,13 @@
 
 		async say( sentence ) {
 
-			var string = SentenceSayer.sentenceToString( sentence );
+			var html = "";
 
-			this.element.innerHTML = "<span>" + string + "</span>";
-
+			if (sentence) {
+				html = "<span>" + SentenceSayer.sentenceToString( sentence ) + "</span>";
+			}
+				
+			this.element.innerHTML = html;
 		}
 	}
 
@@ -124,6 +129,8 @@
 		}
 
 		async say( sentence ) {
+			
+			if (!sentence) return;
 
 			if (!this.voice) return;
 

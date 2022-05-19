@@ -16,6 +16,8 @@
 		}
 
 		start() {
+			
+			console.debug( "Valmentaja.start()" );
 
 			if (!this.sentenceGenerator) return;
 
@@ -24,9 +26,16 @@
 			this.loop();
 		}
 
-		stop() {
+		async stop() {
+
+			console.debug( "Valmentaja.stop()" );
 
 			this.running = false;
+
+			for (var sayer of this.sentenceSayers) {
+
+				if (!sayer.disabled) await sayer.say( null );
+			}
 		}
 
 		async loop() {
@@ -43,7 +52,7 @@
 
 				console.error( error );
 
-				this.stop();
+				await this.stop();
 			}
 		}
 

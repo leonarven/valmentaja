@@ -51,24 +51,49 @@
 
 	const valmentaja = new Valmentaja(() => buildSentence( 2, 0 ));
 
-
-	valmentaja.addSayer( new SentenceSayer.HTMLInjector( document.getElementById( "text" )));
+	valmentaja.addSayer( new SentenceSayer.HTMLInjector( document.getElementById( "text" ) ));
 	valmentaja.addSayer( new SentenceSayer.SpeechApi() );
 	valmentaja.addSayer( new SentenceSayer.ConsoleLog() );
 
 	valmentaja.setSpeed( 2500 ); // 2.5s
 
+
 	exports.start = async function start() {
 
-		await initValmentaja();
+		var timeout_time_seconds_input      = document.getElementById( "timeout_time_seconds" ) || {};
+		var sentences_timeout_seconds_input = document.getElementById( "sentences_timeout_seconds" ) || {};
+
+		
+		var timeout_time_seconds = parseInt( timeout_time_seconds_input.value ) || 0;
+
+		if (timeout_time_seconds > 0) setTimeout( async () => {
+
+			await valmentaja.stop();
+
+			alert( "Aika loppui!" );
+
+		}, timeout_time_seconds * 1000 );
+
+
+		var sentences_timeout_seconds = parseFloat( sentences_timeout_seconds_input.value ) || 0;
+
+		if (sentences_timeout_seconds > 0) valmentaja.setSpeed( sentences_timeout_seconds * 1000 );
+
+
+		valmentaja.start();
 
 		await initWakeLock();
+
+
+		/***** DOM-manipulointi *****/
+		document.body.classList.add( "running" );
+		timeout_time_seconds_input.readOnly = true;
+		sentences_timeout_seconds_input.readOnly = true;
+		/****************************/
 	};
 
 
 	async function initValmentaja() {
-	
-		valmentaja.start();
 	}
 
 

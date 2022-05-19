@@ -5,12 +5,28 @@
 		<link rel="manifest" href="manifest.json">
 		<link rel="icon" href="media/icon_48.png">
 
+		<style type="text/css">
+			.running #training-form input[type='submit'] { display: none; }
+		</style>
+
 	</head>
 	<body>
+		<form id="training-form" onsubmit="return start(), false">
+			<div>
+				<label for="timeout_time_seconds">timeout_time_seconds</label>
+				<input type="number" step="1" min="0" value="60" name="timeout_time_seconds" id="timeout_time_seconds">
+			<div>
+			
+			<div>
+				<label for="sentences_timeout_seconds">sentences_timeout_seconds</label>
+				<input type="number" step="0.01" min="0" value="2.5" name="sentences_timeout_seconds" id="sentences_timeout_seconds">
+			</div>
+			<div>
+				<input type="submit" style="font-size:1em;" value="Aloita!">
+			</div>
+		</form>
 
-		<h1 style="text-align: center; padding: 1em;" id="text">
-			<button style="font-size:1em;" onclick="start()">Aloita!</button>
-		</h1>
+		<h1 style="text-align: center; padding: 1em;" id="text"></h1>
 
 		<script type="text/javascript" src="src/SentenceSayer.js"></script>
 		<script type="text/javascript" src="src/Valmentaja.js"></script>
