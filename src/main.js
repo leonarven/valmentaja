@@ -51,20 +51,42 @@
 
 	const valmentaja = new Valmentaja(() => buildSentence( 2, 0 ));
 
-	setTimeout( onload, 100 );
 
-	function onload() {
+	valmentaja.addSayer( new SentenceSayer.HTMLInjector( document.getElementById( "text" )));
+	valmentaja.addSayer( new SentenceSayer.SpeechApi() );
+	valmentaja.addSayer( new SentenceSayer.ConsoleLog() );
 
-		valmentaja.addSayer( new SentenceSayer.HTMLInjector( document.getElementById( "text" )));
-		valmentaja.addSayer( new SentenceSayer.SpeechApi() );
-		valmentaja.addSayer( new SentenceSayer.ConsoleLog() );
+	valmentaja.setSpeed( 2500 ); // 2.5s
 
-		valmentaja.setSpeed( 2500 ); // 2.5s
+	exports.start = async function start() {
 
-		exports.start = function( event ) {
+		await initValmentaja();
 
-			valmentaja.start();
+		await initWakeLock();
+	};
+
+
+	async function initValmentaja() {
+	
+		valmentaja.start();
+	}
+
+
+	/** @see {@link https://developer.mozilla.org/en-US/docs/Web/API/Screen_Wake_Lock_API} */
+	async function initWakeLock() {
+
+		// Create a reference for the Wake Lock.
+		var wakeLock = null;
+
+		// create an async function to request a wake lock
+		try {
+			wakeLock = await navigator.wakeLock.request('screen');
+		} catch (err) {
+			// The Wake Lock request has failed - usually system related, such as battery.
+			console.error( `${err.name}, ${err.message}` );
+			console.error( err );
 		}
 	}
+
 })( this );
 
