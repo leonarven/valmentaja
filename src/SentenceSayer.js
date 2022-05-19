@@ -102,13 +102,21 @@
 
 					if (!self.voice) {
 						for (var voice of voices) {
-							if (voice.default) {
+							if (voice.default && voice.lang == "en-GB") {
 								self.voice = voice;
 								break;
 							}
 						}
 					}
 
+					if (!self.voice) {
+						for (var voice of voices) {
+							if (voice.lang == "en-GB") {
+								self.voice = voice;
+								break;
+							}
+						}
+					}
 
 					if (!self.voice) self.voice = voices[0];
 				}

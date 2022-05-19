@@ -1,10 +1,10 @@
 {
-  "name": "2022-05-18-nyrkkeily-valmentaja",
+  "name": "valmentaja",
   "version": "1.0.0",
   "description": "",
-  "main": "main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "echo '<html><head><meta charset=\"utf-8\"></head><body><script type=\"text/javascript\">' > index.html; cat src/SentenceSayer.js src/Valmentaja.js src/main.js >> index.html; echo '</script></body></html>' >> index.html"
   },
   "author": "",
   "license": "ISC"
