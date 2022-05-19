@@ -13,106 +13,122 @@
 			hit_sets_obj[key].push( hit );
 		}
 
-
-		function xh( string ) {
+		function bothsides_hand( string ) {
 			string = new String( string );
 			string.hand = true;
 			string.backside = true;
 			string.frontside = true;
-			inject_hit( string, "xh" );
-			inject_hit( string, "xx" );
+			inject_hit( string, "bothsides_hand" );
+			inject_hit( string, "bothsides" );
 			return string;
 		}
 
-		function bh( string ) {
+		function backside_hand( string ) {
 			string = new String( string );
 			string.hand = true;
 			string.backside = true;
-			inject_hit( string, "bh" );
-			inject_hit( string, "bx" );
+			inject_hit( string, "backside_hand" );
+			inject_hit( string, "backside_any" );
 			return string;
 		}
 
-		function fh( string ) {
+		function frontside_hand( string ) {
 			string = new String( string );
 			string.hand = true;
 			string.frontside = true;
-			inject_hit( string, "fh" );
-			inject_hit( string, "fx" );
+			inject_hit( string, "frontside_hand" );
+			inject_hit( string, "frontside_any" );
 			return string;
 		}
 
-		function zhd( string ) {
+		function noside_hand_defensive( string ) {
 			string = new String( string );
 			string.hand = true;
 			string.defensive = true;
-			inject_hit( string, "zhd" );
+			inject_hit( string, "noside_hand_defensive" );
 			return string;
 		}
 
-		function zzd( string ) {
+		function noside_defensive( string ) {
 			string = new String( string );
 			string.defensive = true;
-			inject_hit( string, "zzd" );
+			inject_hit( string, "noside_defensive" );
 			return string;
 		}
 
 
-		function xf( string ) {
+		function bothsides_foot( string ) {
 			string = new String( string );
 			string.foot = true;
 			string.backside = true;
 			string.frontside = true;
-			inject_hit( string, "xf" );
-			inject_hit( string, "xx" );
+			inject_hit( string, "bothsides_foot" );
+			inject_hit( string, "bothsides" );
 			return string;
 		}
 
-		function bf( string ) {
+		function backside_foot( string ) {
 			string = new String( string );
 			string.foot = true;
 			string.backside = true;
-			inject_hit( string, "bf" );
-			inject_hit( string, "bx" );
+			inject_hit( string, "backside_foot" );
+			inject_hit( string, "backside_any" );
 			return string;
 		}
 
-		function ff( string ) {
+		function frontside_foot( string ) {
 			string = new String( string );
 			string.foot = true;
 			string.frontside = true;
-			inject_hit( string, "ff" );
-			inject_hit( string, "fx" );
+			inject_hit( string, "frontside_foot" );
+			inject_hit( string, "frontside_any" );
 			return string;
 		}
 		
-		function xfd( string ) {
+		function bothsides_foot_defensive( string ) {
 			string = new String( string );
 			string.foot = true;
 			string.defensive = true;
-			inject_hit( string, "xfd" );
+			inject_hit( string, "bothsides_foot_defensive" );
+			inject_hit( string, "bothsides" );
 			return string;
 		}
 		
-		function ffd( string ) {
+		function frontside_foot_defensive( string ) {
 			string = new String( string );
 			string.foot = true;
 			string.frontside = true;
 			string.defensive = true;
-			inject_hit( string, "ffd" );
+			inject_hit( string, "frontside_foot_defensive" );
 			return string;
 		}		
 		
-		function bfd( string ) {
+		function backside_foot_defensive( string ) {
 			string = new String( string );
 			string.foot = true;
 			string.backside = true;
 			string.defensive = true;
-			inject_hit( string, "ffd" );
+			inject_hit( string, "backside_foot_defensive" );
 			return string;
 		}		
-		
-		
+
+
+		var xh  = bothsides_hand;
+		var xf  = bothsides_foot;
+		var xfd = bothsides_foot_defensive;
+
+		var bh  = backside_hand;
+		var bf  = backside_foot;
+		var bfd = backside_foot_defensive;
+
+		var fh  = frontside_hand;
+		var ff  = frontside_foot;
+		var ffd = frontside_foot_defensive;
+
+		var zhd = noside_hand_defensive
+		var zd = noside_defensive;
+
+
 
 		const hits = [
 			xh("suora"),
@@ -148,9 +164,9 @@
 			bf("takajalan torjunta"),
 
 			zhd("pään torjunta"),
-			zzd("lyönnin väistö"),
-			zzd("potkun väistö"),
-			zzd("askel taakse josta väistö"),
+			zd("lyönnin väistö"),
+			zd("potkun väistö"),
+			zd("askel taakse josta väistö"),
 
 			xfd("pysäri"),
 			ffd("etujalan pysäri"),
@@ -160,7 +176,7 @@
 			ffd("työntö etujalan polvella"),
 			bfd("työntö takajalan polvella"),
 		];
-
+	 
 		console.debug( "Using hit sets", hit_sets_obj );
 
 		return (max_length = 1, min_length = 1, sentence = []) => {
@@ -189,7 +205,7 @@
 				if (sentence.length >= count) break;
 			}
 
-			if (set == hits_sameside) {
+			if (set == hit_sets_obj.bothsides || set == hit_sets_obj.bothsides_hand || set == hit_sets_obj.bothsides_foot || set == hit_sets_obj.bothsides_foot_defensive) {
 				if (sentence.length > 1) sentence.prefix = "Saman puolen";
 			}
 			
