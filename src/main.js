@@ -1,4 +1,4 @@
-(() => {
+(( exports ) => {
 
 	var buildSentence = (() => {
 
@@ -61,7 +61,10 @@
 
 		valmentaja.setSpeed( 2500 ); // 2.5s
 
-		valmentaja.start();
+		exports.start = function( event ) {
+
+			valmentaja.start();
+		}
 	}
-})();
+})( this );
 

@@ -60,7 +60,14 @@
 
 			if (this.sentenceSayers.length > 0) {
 
-				for (var sayer of this.sentenceSayers) sayer.say( sentence );
+				var prms = [];
+				
+				for (var sayer of this.sentenceSayers) {
+
+					if (!sayer.disabled) prms.push( sayer.say( sentence ));
+				}
+
+				return Promise.all( prms );
 
 			} else {
 

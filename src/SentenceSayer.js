@@ -4,6 +4,8 @@
 
 	class SentenceSayer {
 
+		disabled = false;
+
 		static sentenceToString( sentence ) {
 
 			var string = "";
@@ -63,7 +65,6 @@
 			var self = this;
 
 			var speech = this.speech = window.speechSynthesis;
-			
 
 			populateVoiceList();
 
@@ -73,70 +74,80 @@
 
 			function populateVoiceList() {
 
-				var voices = self.voices = speech.getVoices(); // now should have an array of all voices
+				self.setVoices( speech.getVoices() );
+			}
+		}
 
-				if (voices.length > 0) {
+		setVoices( voices ) {
 
-					if (self.voice) {
+			this.voices = voices;
 
-						var found;
+			if (voices.length > 0) {
 
-						for (var voice of voices) {
-							if (self.voice.name == voice.name) {
-								found = voice;
-								break;
-							}
-						}
+				if (this.voice) {
 
-						self.voice = found || null;
-					}
+					var found;
 
-					if (!self.voice) {
-						for (var voice of voices) {
-							if (voice.lang == "fi-FI") {
-								self.voice = voice;
-								break;
-							}
+					for (var voice of voices) {
+						if (this.voice.name == voice.name) {
+							found = voice;
+							break;
 						}
 					}
 
-					if (!self.voice) {
-						for (var voice of voices) {
-							if (voice.default && voice.lang == "en-GB") {
-								self.voice = voice;
-								break;
-							}
-						}
-					}
-
-					if (!self.voice) {
-						for (var voice of voices) {
-							if (voice.lang == "en-GB") {
-								self.voice = voice;
-								break;
-							}
-						}
-					}
-
-					if (!self.voice) self.voice = voices[0];
+					this.voice = found || null;
 				}
+
+				if (!this.voice) {
+					for (var voice of voices) {
+						if (voice.lang == "fi-FI") return this.voice = voice;
+					}
+				}
+
+				if (!this.voice) {
+					for (var voice of voices) {
+						if (voice.default && voice.lang == "en-GB") return this.voice = voice;
+					}
+				}
+
+				if (!this.voice) {
+					for (var voice of voices) {
+						if (voice.lang == "en-GB") return this.voice = voice;
+					}
+				}
+
+				if (!this.voice) this.voice = voices[0];
+
+			} else {
+				this.voice = null;
 			}
 		}
 
 		async say( sentence ) {
 
+			if (!this.voice) return;
+
 			var string = SentenceSayer.sentenceToString( sentence );
 		
 			var utterance = new SpeechSynthesisUtterance( string );
 
-			utterance.rate  = this.rate;
-			utterance.pitch = this.pitch;
+			utterance.rate   = this.rate;
+			utterance.pitch  = this.pitch;
 			utterance.volume = this.volume;
-		
-			if (this.voice) utterance.voice = this.voice;
+			utterance.voice  = this.voice;
 
-			this.speech.speak( utterance );
+			return new Promise(( resolve, reject ) => {
 
+				utterance.onend = resolve;
+				utterance.onerror = reject;
+				
+				this.speech.speak( utterance );
+
+			}).catch( error => {
+				
+				console.error( error );
+
+			});
 		}
 	}
 
