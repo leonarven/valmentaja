@@ -8,6 +8,8 @@
 
 		timeout_ms = 1000;
 
+		sentenceSayers = [];
+
 		constructor( sentenceGenerator ) {
 
 			this.sentenceGenerator = sentenceGenerator;
@@ -56,21 +58,24 @@
 
 		async say( sentence ) {
 
-			console.debug( SentenceSayer.sentenceToString( sentence ));
+			if (this.sentenceSayers.length > 0) {
 
-			if (this.sentenceSayer) {
-
-				this.sentenceSayer.say( sentence );
+				for (var sayer of this.sentenceSayers) sayer.say( sentence );
 
 			} else {
 
-				console.error( new Error( "No sentenceSayer setted!" ));
+				console.warn( "No sentenceSayers setted!" );
 			}
+		}
+		
+		addSayer( sentenceSayer ) {
+
+			this.sentenceSayers.push( sentenceSayer );
 		}
 
 		setSayer( sentenceSayer ) {
 
-			this.sentenceSayer = sentenceSayer;
+			this.sentenceSayers.splice( 0, this.sentenceSayers.length, sentenceSayer );
 		}
 
 

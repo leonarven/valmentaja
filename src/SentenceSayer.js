@@ -16,7 +16,7 @@
 
 			if (sentence.prefix) string = sentence.prefix + " " + string;
 
-			if (string.length > 0) string = string[0].toUpperCase() + string.substr( 1 );
+			if (string.length > 0) string = string[0].toUpperCase() + string.substr( 1 ) + ".";
 
 			return string;
 		}

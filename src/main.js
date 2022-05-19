@@ -28,11 +28,15 @@
 
 			var words = word_sets[ parseInt( word_sets.length * Math.random()) ];
 
-			for (var i = 0; i < count; i++) {
+			for (var i = 0; i < 100; i++) {
 
-				var idx = parseInt( Math.random() * words.length );
+				var word = words[ parseInt( Math.random() * words.length ) ];
+
+				//if (sentence.length > 0 && word == sentence[ sentence.length - 1 ]) continue;
 				
-				sentence.push( words[idx] );
+				sentence.push( word );
+
+				if (sentence.length >= count) break;
 			}
 
 			if (set == hits_sameside) {
@@ -51,13 +55,9 @@
 
 	function onload() {
 
-		var sayer;
-
-		//sayer = new SentenceSayer.HTMLInjector( document.getElementById( "content" ) );
-		sayer = new SentenceSayer.SpeechApi();
-		//sayer = new SentenceSayer.ConsoleLog();
-
-		valmentaja.setSayer( sayer );
+		valmentaja.addSayer( new SentenceSayer.HTMLInjector( document.getElementById( "text" )));
+		valmentaja.addSayer( new SentenceSayer.SpeechApi() );
+		valmentaja.addSayer( new SentenceSayer.ConsoleLog() );
 
 		valmentaja.setSpeed( 2500 ); // 2.5s
 

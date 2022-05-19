@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "echo '<html><head><meta charset=\"utf-8\"></head><body><script type=\"text/javascript\">' > index.html; cat src/SentenceSayer.js src/Valmentaja.js src/main.js >> index.html; echo '</script></body></html>' >> index.html"
+    "build": "echo '<html><head><meta charset=\"utf-8\"></head><body><script type=\"text/javascript\">' > build/index.html; cat src/SentenceSayer.js src/Valmentaja.js src/main.js >> build/index.html; echo '</script></body></html>' >> build/index.html"
   },
   "author": "",
   "license": "ISC"
