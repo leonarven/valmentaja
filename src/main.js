@@ -3,13 +3,9 @@
 	var buildSentence = (() => {
 		
 		const hit_sets_obj = {}
-		const hit_sets = [];
 
 		function inject_hit( hit, key ) {
-			if (!hit_sets_obj[key]) {
-				hit_sets_obj[key] = [];
-				hit_sets.push( hit_sets_obj[key] );
-			}
+			if (!hit_sets_obj[key]) hit_sets_obj[key] = [];
 			hit_sets_obj[key].push( hit );
 		}
 
@@ -19,7 +15,6 @@
 			string.backside = true;
 			string.frontside = true;
 			inject_hit( string, "bothsides_hand" );
-			inject_hit( string, "bothsides" );
 			return string;
 		}
 
@@ -28,7 +23,6 @@
 			string.hand = true;
 			string.backside = true;
 			inject_hit( string, "backside_hand" );
-			inject_hit( string, "backside_any" );
 			return string;
 		}
 
@@ -37,7 +31,6 @@
 			string.hand = true;
 			string.frontside = true;
 			inject_hit( string, "frontside_hand" );
-			inject_hit( string, "frontside_any" );
 			return string;
 		}
 
@@ -63,7 +56,6 @@
 			string.backside = true;
 			string.frontside = true;
 			inject_hit( string, "bothsides_foot" );
-			inject_hit( string, "bothsides" );
 			return string;
 		}
 
@@ -72,7 +64,6 @@
 			string.foot = true;
 			string.backside = true;
 			inject_hit( string, "backside_foot" );
-			inject_hit( string, "backside_any" );
 			return string;
 		}
 
@@ -81,7 +72,6 @@
 			string.foot = true;
 			string.frontside = true;
 			inject_hit( string, "frontside_foot" );
-			inject_hit( string, "frontside_any" );
 			return string;
 		}
 		
@@ -90,7 +80,6 @@
 			string.foot = true;
 			string.defensive = true;
 			inject_hit( string, "bothsides_foot_defensive" );
-			inject_hit( string, "bothsides" );
 			return string;
 		}
 		
@@ -176,10 +165,21 @@
 			ffd("työntö etujalan polvella"),
 			bfd("työntö takajalan polvella"),
 		];
-	 
-		console.debug( "Using hit sets", hit_sets_obj );
 
-		return (max_length = 1, min_length = 1, sentence = []) => {
+		hit_sets_obj.bothsides = [ ...hit_sets_obj.bothsides_hand, ...hit_sets_obj.bothsides_foot, ...hit_sets_obj.bothsides_foot_defensive ];
+
+		hit_sets_obj.backside = [ ...hit_sets_obj.backside_hand, ...hit_sets_obj.backside_hand, ...hit_sets_obj.backside_foot_defensive ];
+
+		hit_sets_obj.frontside = [ ...hit_sets_obj.frontside_hand, ...hit_sets_obj.frontside_foot, ...hit_sets_obj.frontside_foot_defensive ];
+		
+		const hit_sets = Object.keys( hit_sets_obj ).map( key => hit_sets_obj[key] );
+
+
+		console.group( "Using hit sets:" );
+		for (var key in hit_sets_obj) console.debug( key, hit_sets_obj[key] );
+		console.groupEnd( "Using hit sets:" );
+
+		var buildSentence = (max_length = 1, min_length = 1, sentence = []) => {
 		
 			var set = hit_sets[ parseInt( Math.random() * hit_sets.length ) ];
 
@@ -190,13 +190,11 @@
 
 			count = Math.floor( count * Math.random() );
 
-			var words = hit_sets[ parseInt( hit_sets.length * Math.random()) ];
-
-			count = Math.min( count, words.length );
+			count = Math.min( count, set.length );
 
 			for (var i = 0; i < 100; i++) {
 
-				var word = words[ parseInt( Math.random() * words.length ) ];
+				var word = set[ parseInt( Math.random() * set.length ) ];
 
 				//if (sentence.length > 0 && word == sentence[ sentence.length - 1 ]) continue;
 				
@@ -211,6 +209,10 @@
 			
 			return sentence;
 		}
+
+		buildSentence.set_keys = Object.keys( hit_sets_obj );
+
+		return buildSentence;
 	})();
 
 	/******************/
@@ -284,6 +286,8 @@
 				await valmentaja.stop();
 	
 				alert( "Aika loppui!" );
+
+				location.reload();
 	
 			}, timeout_time_seconds * 1000 );
 	
