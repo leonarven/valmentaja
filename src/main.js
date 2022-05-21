@@ -264,9 +264,11 @@
 			if (elem) elem.value = settings[ key ];
 		}
 
-		for (var set_key of settings.sets) {
-			var elem = sets_select.querySelector("[value=" + set_key + "]" );
-			if (elem) elem.selected = "selected";
+		if (settings.sets && Array.isArray( settings.sets )) {
+			for (var set_key of settings.sets) {
+				var elem = sets_select.querySelector("[value=" + set_key + "]" );
+				if (elem) elem.selected = "selected";
+			}
 		}
 
 		training_form.onsubmit = async function( event ) {
@@ -281,9 +283,19 @@
 			}
 
 			elem = training_form.querySelector( "[name=sets]" );
-			if (elem) settings.sets = Array.prototype.slice.call( training_form.querySelectorAll( "[name=sets] option:checked" ), 0) .map(function(v,i,a) { 
-				return v.value; 
-			});
+			if (elem) {
+				try {
+					settings.sets = Array.prototype.slice.call( training_form.querySelectorAll( "[name=sets] option:checked" ), 0) .map(function(v,i,a) { 
+						return v.value; 
+					});
+				} catch (error) {
+					alert( error.toString() );
+					
+					console.log( error );
+
+					settings.sets = buildSentence.set_keys;
+				}
+			}
 
 			settings.timeout_time_seconds = parseInt( nsettings.timeout_time_seconds ) || undefined;
 			if (!(settings.timeout_time_seconds > 0)) settings.timeout_time_seconds = undefined;
