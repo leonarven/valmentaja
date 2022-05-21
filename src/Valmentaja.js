@@ -42,6 +42,8 @@
 
 			if (!this.running) return;
 
+			console.group( "Valmentaja.loop()" );
+
 			try {
 
 				await this.run();
@@ -54,6 +56,8 @@
 
 				await this.stop();
 			}
+
+			console.groupEnd( "Valmentaja.loop()" );
 		}
 
 		async run() {
@@ -68,6 +72,8 @@
 		async say( sentence ) {
 
 			if (this.sentenceSayers.length > 0) {
+
+				console.debug( "Valmentaja.say() ::", sentence );
 
 				var prms = [];
 				

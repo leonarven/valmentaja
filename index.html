@@ -14,13 +14,49 @@
 		<form id="training-form">
 			<div>
 				<label for="timeout_time_seconds">timeout_time_seconds</label>
-				<input type="number" step="1" min="0" value="60" name="timeout_time_seconds" id="timeout_time_seconds">
+				<input type="number" step="1" min="0" name="timeout_time_seconds" id="timeout_time_seconds">
 			<div>
 			
 			<div>
 				<label for="sentences_timeout_seconds">sentences_timeout_seconds</label>
-				<input type="number" step="0.01" min="0" value="2.5" name="sentences_timeout_seconds" id="sentences_timeout_seconds">
+				<input type="number" step="0.01" min="0" name="sentences_timeout_seconds" id="sentences_timeout_seconds">
 			</div>
+			
+			<div>
+				<label for="sentences_min_length">sentences_min_length</label>
+				<input type="number" step="1" min="0" name="sentences_min_length" id="sentences_min_length">
+			</div>
+				
+			<div>
+				<label for="sentences_max_length">sentences_max_length</label>
+				<input type="number" step="1" min="0" name="sentences_max_length" id="sentences_max_length">
+			</div>
+
+			<div>
+				<label for="sets">sets</label>
+				<select name="sets" id="sets" multiple>
+					<option value="bothsides_hand">bothsides_hand</option>
+					<option value="bothsides_foot">bothsides_foot</option>
+					<option value="bothsides_foot_defensive">bothsides_foot_defensive</option>
+					<option value="backside_hand">backside_hand</option>
+					<option value="backside_foot">backside_foot</option>
+					<option value="backside_foot_defensive">backside_foot_defensive</option>
+					<option value="frontside_hand">frontside_hand</option>
+					<option value="frontside_foot">frontside_foot</option>
+					<option value="frontside_foot_defensive">frontside_foot_defensive</option>
+					<option value="noside_hand_defensive">noside_hand_defensive</option>
+					<option value="noside_defensive">noside_defensive</option>
+
+					<option value="bothsides">bothsides</option>
+					<option value="backside">backside</option>
+					<option value="frontside">frontside</option>
+
+					<option value="defensives">defensives</option>
+					<option value="hands">hands</option>
+					<option value="feets">feets</option>
+				</select>
+			</div>
+
 			<div>
 				<input type="submit" style="font-size:1em;" value="Aloita!">
 			</div>

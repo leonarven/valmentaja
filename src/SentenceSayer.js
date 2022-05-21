@@ -143,16 +143,34 @@
 			utterance.volume = this.volume;
 			utterance.voice  = this.voice;
 
+			var cancelTimeout;
+
 			return new Promise(( resolve, reject ) => {
 
-				utterance.onend = resolve;
-				utterance.onerror = reject;
+				try {
+					
+					utterance.onend = resolve;
+					utterance.onerror = reject;
 				
-				this.speech.speak( utterance );
+					this.speech.speak( utterance );
+
+					cancelTimeout = setTimeout(() => {
+
+						utterance.onend = null;
+						
+						resolve();
+
+					}, 4000 );
+
+				} catch (error) { reject( error ); }
 
 			}).catch( error => {
 				
 				console.error( error );
+
+			}).then(() => {
+
+				clearTimeout( cancelTimeout );
 
 			});
 		}

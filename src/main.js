@@ -115,7 +115,7 @@
 		var ffd = frontside_foot_defensive;
 
 		var zhd = noside_hand_defensive
-		var zd = noside_defensive;
+		var zd  = noside_defensive;
 
 
 
@@ -171,7 +171,13 @@
 		hit_sets_obj.backside = [ ...hit_sets_obj.backside_hand, ...hit_sets_obj.backside_hand, ...hit_sets_obj.backside_foot_defensive ];
 
 		hit_sets_obj.frontside = [ ...hit_sets_obj.frontside_hand, ...hit_sets_obj.frontside_foot, ...hit_sets_obj.frontside_foot_defensive ];
+
+		hit_sets_obj.hands = [ ...hit_sets_obj.noside_defensive, ...hit_sets_obj.noside_hand_defensive ];
+
+		hit_sets_obj.feets = [ ...hit_sets_obj.bothsides_hand, ...hit_sets_obj.backside_hand, ...hit_sets_obj.frontside_hand, ...hit_sets_obj.noside_hand_defensive ];
 		
+		hit_sets_obj.defensives = [ ...hit_sets_obj.noside_defensive, ...hit_sets_obj.noside_hand_defensive ];
+
 		const hit_sets = Object.keys( hit_sets_obj ).map( key => hit_sets_obj[key] );
 
 
@@ -179,9 +185,14 @@
 		for (var key in hit_sets_obj) console.debug( key, hit_sets_obj[key] );
 		console.groupEnd( "Using hit sets:" );
 
-		var buildSentence = (max_length = 1, min_length = 1, sentence = []) => {
-		
-			var set = hit_sets[ parseInt( Math.random() * hit_sets.length ) ];
+		var buildSentence =  function buildSentence(max_length = 1, min_length = 1, sentence = [], set_keys = Object.keys( hit_sets_obj ) ) {
+
+			console.debug( "buildSentence( max_length, min_length, sentence, set_keys ) ::", arguments );
+
+			var set = set_keys.reduce(( out, set_key ) => {
+				for (var word of hit_sets_obj[ set_key ]) if (out.indexOf( word ) == -1) out.push( word );
+				return out;
+			}, [ ]);
 
 			if (!(min_length >= 0)) return;
 			if (!(min_length <= max_length)) return;
@@ -195,12 +206,10 @@
 			for (var i = 0; i < 100; i++) {
 
 				var word = set[ parseInt( Math.random() * set.length ) ];
-
-				//if (sentence.length > 0 && word == sentence[ sentence.length - 1 ]) continue;
 				
 				sentence.push( word );
 
-				if (sentence.length >= count) break;
+				if (sentence.length >= min_length + count) break;
 			}
 
 			if (set == hit_sets_obj.bothsides || set == hit_sets_obj.bothsides_hand || set == hit_sets_obj.bothsides_foot || set == hit_sets_obj.bothsides_foot_defensive) {
@@ -217,7 +226,7 @@
 
 	/******************/
 
-	const valmentaja = new Valmentaja(() => buildSentence( 3, 0 ));
+	const valmentaja = new Valmentaja();
 
 	valmentaja.addSayer( new SentenceSayer.HTMLInjector( document.getElementById( "text" ) ));
 	valmentaja.addSayer( new SentenceSayer.SpeechApi() );
@@ -231,36 +240,50 @@
 		var training_form                   = document.getElementById( "training-form" ) || {};
 		var timeout_time_seconds_input      = document.getElementById( "timeout_time_seconds" ) || {};
 		var sentences_timeout_seconds_input = document.getElementById( "sentences_timeout_seconds" ) || {};
+		var sets_select                     = document.getElementById( "sets" ) || {};
 
 		
 		var default_settings = {
 			timeout_time_seconds      : 60,
 			sentences_timeout_seconds : 2.5,
+			sentences_min_length      : 0,
+			sentences_max_length      : 3
 		};
 
 		var settings = {};
 
 		try {
 			settings = JSON.parse( window.localStorage.getItem( "valmentaja-settings-v1" ) || "{}" );
+			console.info( "Loaded settings", settings );
 		} catch (error) { console.error( error ); }
 
 		settings = { ...default_settings, ...settings };
 
-		for (var key in settings) {
+		for (var key in default_settings) {
 			var elem = training_form.querySelector( "[name=" + key + "]" );
 			if (elem) elem.value = settings[ key ];
+		}
+
+		for (var set_key of settings.sets) {
+			var elem = sets_select.querySelector("[value=" + set_key + "]" );
+			if (elem) elem.selected = "selected";
 		}
 
 		training_form.onsubmit = async function( event ) {
 			
 			event.preventDefault();
 
-			var nsettings = {};
+			var nsettings = {}, elem;
 
-			for (var key in settings) {
-				var elem = training_form.querySelector( "[name=" + key + "]" );
+			for (var key in default_settings) {
+				elem = training_form.querySelector( "[name=" + key + "]" );
 				if (elem) nsettings[ key ] = elem.value;
 			}
+
+			elem = training_form.querySelector( "[name=sets]" );
+			if (elem) settings.sets = Array.prototype.slice.call( training_form.querySelectorAll( "[name=sets] option:checked" ), 0) .map(function(v,i,a) { 
+				return v.value; 
+			});
 
 			settings.timeout_time_seconds = parseInt( nsettings.timeout_time_seconds ) || undefined;
 			if (!(settings.timeout_time_seconds > 0)) settings.timeout_time_seconds = undefined;
@@ -269,16 +292,23 @@
 			settings.sentences_timeout_seconds = parseFloat( nsettings.sentences_timeout_seconds ) || undefined;
 			if (!(settings.sentences_timeout_seconds > 0)) settings.sentences_timeout_seconds = undefined;
 
-			settings = { ...default_settings, ...settings }
+			settings.sentences_min_length = parseFloat( nsettings.sentences_min_length ) || undefined;
+			if (!(settings.sentences_min_length > 0)) settings.sentences_min_length = undefined;
+
+			settings.sentences_max_length = parseFloat( nsettings.sentences_max_length ) || undefined;
+			if (!(settings.sentences_max_length > 0)) settings.sentences_max_length = undefined;
+
+			settings = { ...default_settings, ...settings };
 
 
 			try {
-				window.localStorage.setItem( "valmentaja-settings-v1", JSON.stringify( settings ) );
+				window.localStorage.setItem( "valmentaja-settings-v1", JSON.stringify( settings ));
+				console.info( "Saved settings", settings );
 			} catch (error) { console.error( error ); }
 
 			/*********/
 			
-			var { timeout_time_seconds, sentences_timeout_seconds } = settings;
+			var { sets: set_keys, timeout_time_seconds, sentences_timeout_seconds, sentences_min_length, sentences_max_length } = settings;
 			
 	
 			if (timeout_time_seconds) setTimeout( async () => {
@@ -295,6 +325,8 @@
 			if (sentences_timeout_seconds) valmentaja.setSpeed( sentences_timeout_seconds * 1000 );
 
 			/*********/
+
+			valmentaja.sentenceGenerator = () => buildSentence( sentences_max_length, sentences_min_length, [], set_keys );
 	
 			valmentaja.start();
 	
@@ -302,8 +334,7 @@
 	
 			/***** DOM-manipulointi *****/
 			document.body.classList.add( "running" );
-			timeout_time_seconds_input.readOnly = true;
-			sentences_timeout_seconds_input.readOnly = true;
+			Array.prototype.slice.call( training_form.querySelectorAll( "input, select" ), 0 ).forEach( elem => ( elem.disabled = true ));
 			/****************************/
 
 			return false;
