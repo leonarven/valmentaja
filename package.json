@@ -1,5 +1,6 @@
 {
   "name": "2022-05-18-nyrkkeily-valmentaja",
+  "homepage":"https://leonarven.github.io/valmentaja",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
