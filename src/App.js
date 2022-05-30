@@ -1,5 +1,7 @@
 import { memo, useCallback, createContext, useContext, useEffect, useRef, useState } from 'react';
 
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 import './App.css';
 
 import SettingsForm from './components/SettingsForm.js';
@@ -22,7 +24,7 @@ function App() {
 			window.localStorage.setItem( "valmentaja-settings-v1", JSON.stringify( settings ));
 			console.info( "Saved settings", settings );
 		} catch (error) { console.error( error ); }
-		
+
 		setSettings( settings );
 
 		setPage("TRAINER");

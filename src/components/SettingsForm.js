@@ -2,6 +2,7 @@ import { memo, useCallback, createContext, useContext, useEffect, useRef, useSta
 
 import { hit_sets_keys } from '../sets';
 
+import { Container, Row, Col } from 'react-bootstrap';
 //import { useSettings } from '../settings';
 
 const default_settings = {
@@ -51,14 +52,14 @@ const SettingsFormNumberInputRow = memo(function SettingsFormNumberInputRow({ on
 	const { settings } = useContext( SettingsContext );
 
 	return (
-		<div className="row">
-			<div className="col-xs-6">
+		<Row>
+			<Col>
 				<SettingsFormRowLabel id={"settings_form__" + name} label={label} />
-			</div>
-			<div className="col-xs-6">
+			</Col>
+			<Col>
 				<input className="w-100" value={settings[ name ] || ""} onChange={onChange} type="number" id={"settings_form__" + name} name={name} min={min || "0"} max={max} step={step || "1"} />
-			</div>
-		</div>
+			</Col>
+		</Row>
 	);
 });
 
@@ -72,16 +73,16 @@ const SettingsFormMultiselectInputRow = memo(function SettingsFormMultiselectInp
 	};
 
 	return (
-		<div className="row">
-			<div className="col-xs-6">
+		<Row>
+			<Col>
 				<SettingsFormRowLabel id={"settings_form__" + name} label={label} />
-			</div>
-			<div className="col-xs-6">
+			</Col>
+			<Col>
 				<select className="w-100" id={"settings_form__" + name} name={name} value={settings[ name ] || []} onChange={onSelectChange} multiple>
 					{options}
 				</select>
-			</div>
-		</div>
+			</Col>
+		</Row>
 	);
 });
 
@@ -103,35 +104,37 @@ export default function SettingsForm({ onChange, onSubmit }) {
 
 	return (
 		<SettingsContext.Provider value={{ default_settings, settings}}>
-			<form id="training-form" onSubmit={ evt => onSubmit( evt, validateSettings( settings ))}>
-				<SettingsFormNumberInputRow
-					label="timeout_time_seconds"
-					onChange={handleSettingChange}
-					name="timeout_time_seconds" />
-				<SettingsFormNumberInputRow
-					label="sentences_timeout_seconds"
-					step="0.1"
-					onChange={handleSettingChange}
-					name="sentences_timeout_seconds" />
-				<SettingsFormNumberInputRow
-					label="sentences_min_length"
-					onChange={handleSettingChange}
-					name="sentences_min_length" />
-				<SettingsFormNumberInputRow
-					label="sentences_max_length"
-					onChange={handleSettingChange}
-					name="sentences_max_length" />
-				<SettingsFormMultiselectInputRow
-					label="Sets"
-					options={hit_sets_keys.map( key => (<option key={key} value={key}>{key}</option>) )}
-					onChange={handleSettingChange}
-					name="sets" />
-				<div className="row">
-					<div className="col-xs-12">
-						<input type="submit" style={{'fontSize':'1em'}} value="Aloita!" />
+			<Container>
+				<form id="training-form" onSubmit={ evt => onSubmit( evt, validateSettings( settings ))}>
+					<SettingsFormNumberInputRow
+						label="timeout_time_seconds"
+						onChange={handleSettingChange}
+						name="timeout_time_seconds" />
+					<SettingsFormNumberInputRow
+						label="sentences_timeout_seconds"
+						step="0.1"
+						onChange={handleSettingChange}
+						name="sentences_timeout_seconds" />
+					<SettingsFormNumberInputRow
+						label="sentences_min_length"
+						onChange={handleSettingChange}
+						name="sentences_min_length" />
+					<SettingsFormNumberInputRow
+						label="sentences_max_length"
+						onChange={handleSettingChange}
+						name="sentences_max_length" />
+					<SettingsFormMultiselectInputRow
+						label="Sets"
+						options={hit_sets_keys.map( key => (<option key={key} value={key}>{key}</option>) )}
+						onChange={handleSettingChange}
+						name="sets" />
+					<div className="row">
+						<div className="col-xs-12">
+							<input type="submit" style={{'fontSize':'1em'}} value="Aloita!" />
+						</div>
 					</div>
-				</div>
-			</form>
+				</form>
+			</Container>
 		</SettingsContext.Provider>
 	);
 }
