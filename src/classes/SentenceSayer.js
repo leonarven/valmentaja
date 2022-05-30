@@ -20,6 +20,22 @@ class SentenceSayer {
 	}
 }
 
+class SentenceSayerCallback extends SentenceSayer {
+
+	constructor( callback = () => {} ) {
+		super();
+
+		this.callback = callback;
+	}
+
+	async say( sentence ) {
+
+		if (!sentence) return;
+
+		this.callback( sentence, SentenceSayer.sentenceToString( sentence ));
+	}
+}
+
 class SentenceSayerConsoleLog extends SentenceSayer {
 
 	async say( sentence ) {
@@ -175,5 +191,6 @@ class SentenceSayerSpeechApi extends SentenceSayer {
 SentenceSayer.SpeechApi    = SentenceSayerSpeechApi;
 SentenceSayer.ConsoleLog   = SentenceSayerConsoleLog;
 SentenceSayer.HTMLInjector = SentenceSayerHTMLInjector;
+SentenceSayer.Callback     = SentenceSayerCallback;
 
 export default SentenceSayer;

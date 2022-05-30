@@ -8,12 +8,11 @@ export default class SentenceBuilder {
     }
 
     get() {
-        return this.build( this.min_length, this.max_length, this.set_keys );
+        return this.build( this.max_length, this.min_length, undefined, this.set_keys );
     }
 
 	getGenerator() {
-		var self = this;
-		return () => self.get();
+		return (function() { return this.get(); }).bind( this );
 	}
 
     build( max_length = 1, min_length = 1, sentence = [], set_keys = Object.keys( hit_sets_obj ) ) {
