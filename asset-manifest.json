@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/static/css/main.75c2b716.css",
-    "main.js": "/static/js/main.ce7b686f.js",
-    "static/js/787.e090e9f5.chunk.js": "/static/js/787.e090e9f5.chunk.js",
-    "index.html": "/index.html",
-    "main.75c2b716.css.map": "/static/css/main.75c2b716.css.map",
-    "main.ce7b686f.js.map": "/static/js/main.ce7b686f.js.map",
-    "787.e090e9f5.chunk.js.map": "/static/js/787.e090e9f5.chunk.js.map"
+    "main.css": "/valmentaja/static/css/main.75c2b716.css",
+    "main.js": "/valmentaja/static/js/main.5ba9cae8.js",
+    "static/js/787.e090e9f5.chunk.js": "/valmentaja/static/js/787.e090e9f5.chunk.js",
+    "index.html": "/valmentaja/index.html",
+    "main.75c2b716.css.map": "/valmentaja/static/css/main.75c2b716.css.map",
+    "main.5ba9cae8.js.map": "/valmentaja/static/js/main.5ba9cae8.js.map",
+    "787.e090e9f5.chunk.js.map": "/valmentaja/static/js/787.e090e9f5.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.75c2b716.css",
-    "static/js/main.ce7b686f.js"
+    "static/js/main.5ba9cae8.js"
   ]
 }
