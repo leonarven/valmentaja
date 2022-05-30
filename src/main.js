@@ -1,7 +1,7 @@
 (( exports ) => {
 
 	var buildSentence = (() => {
-		
+
 		const hit_sets_obj = {}
 
 		function inject_hit( hit, key ) {
@@ -42,13 +42,19 @@
 			return string;
 		}
 
+		function noside_hand( string ) {
+			string = new String( string );
+			string.hand = true;
+			inject_hit( string, "noside_hand" );
+			return string;
+		}
+
 		function noside_defensive( string ) {
 			string = new String( string );
 			string.defensive = true;
 			inject_hit( string, "noside_defensive" );
 			return string;
 		}
-
 
 		function bothsides_foot( string ) {
 			string = new String( string );
@@ -74,7 +80,7 @@
 			inject_hit( string, "frontside_foot" );
 			return string;
 		}
-		
+
 		function bothsides_foot_defensive( string ) {
 			string = new String( string );
 			string.foot = true;
@@ -82,7 +88,7 @@
 			inject_hit( string, "bothsides_foot_defensive" );
 			return string;
 		}
-		
+
 		function frontside_foot_defensive( string ) {
 			string = new String( string );
 			string.foot = true;
@@ -90,8 +96,8 @@
 			string.defensive = true;
 			inject_hit( string, "frontside_foot_defensive" );
 			return string;
-		}		
-		
+		}
+
 		function backside_foot_defensive( string ) {
 			string = new String( string );
 			string.foot = true;
@@ -99,7 +105,7 @@
 			string.defensive = true;
 			inject_hit( string, "backside_foot_defensive" );
 			return string;
-		}		
+		}
 
 
 		var xh  = bothsides_hand;
@@ -114,15 +120,20 @@
 		var ff  = frontside_foot;
 		var ffd = frontside_foot_defensive;
 
-		var zhd = noside_hand_defensive
-		var zd  = noside_defensive;
+		var xh  = bothsides_hand;
+
+		var zh  = noside_hand;
+		var zhd = noside_hand_defensive;
+		var  zd = noside_defensive;
 
 
 
-		const hits = [
+		([
 			xh("suora"),
 			fh("etusuora"),
 			bh("takasuora"),
+			zh("etu-taka", 2),
+			zh("neljä suoraa", 4),
 
 			xh("uppari"),
 			fh("etukäden uppari"),
@@ -131,11 +142,11 @@
 			xh("koukku"),
 			fh("etukäden koukku"),
 			bh("takakäden koukku"),
-			
+
 			xh("kyynärpää yltä"),
 			fh("etukäden kyynärpää yltä"),
 			bh("takakäden kyynärpää yltä"),
-			
+
 			xh("kyynärpää alta"),
 			fh("etukäden kyynärpää alta"),
 			bh("takakäden kyynärpää yltä"),
@@ -148,14 +159,14 @@
 			ff("etujalan kiertopotku"),
 			bf("takajalan kiertopotku"),
 
-			xf("jalkatorjunta"),
-			ff("etujalan torjunta"),
-			bf("takajalan torjunta"),
+			xfd("potkun torjunta"),
+			ffd("etujalan potkun torjunta"),
+			bfd("takajalan potkun torjunta"),
 
 			zhd("pään torjunta"),
-			zd("lyönnin väistö"),
-			zd("potkun väistö"),
-			zd("askel taakse josta väistö"),
+			 zd("lyönnin väistö"),
+			 zd("potkun väistö"),
+			 zd("askel taakse josta väistö", 2 ),
 
 			xfd("pysäri"),
 			ffd("etujalan pysäri"),
@@ -164,7 +175,7 @@
 			xfd("työntö polvella"),
 			ffd("työntö etujalan polvella"),
 			bfd("työntö takajalan polvella"),
-		];
+		]);
 
 		hit_sets_obj.bothsides = [ ...hit_sets_obj.bothsides_hand, ...hit_sets_obj.bothsides_foot, ...hit_sets_obj.bothsides_foot_defensive ];
 
@@ -175,7 +186,7 @@
 		hit_sets_obj.hands = [ ...hit_sets_obj.noside_defensive, ...hit_sets_obj.noside_hand_defensive ];
 
 		hit_sets_obj.feets = [ ...hit_sets_obj.bothsides_hand, ...hit_sets_obj.backside_hand, ...hit_sets_obj.frontside_hand, ...hit_sets_obj.noside_hand_defensive ];
-		
+
 		hit_sets_obj.defensives = [ ...hit_sets_obj.noside_defensive, ...hit_sets_obj.noside_hand_defensive ];
 
 		const hit_sets = Object.keys( hit_sets_obj ).map( key => hit_sets_obj[key] );
@@ -206,7 +217,7 @@
 			for (var i = 0; i < 100; i++) {
 
 				var word = set[ parseInt( Math.random() * set.length ) ];
-				
+
 				sentence.push( word );
 
 				if (sentence.length >= min_length + count) break;
@@ -215,7 +226,7 @@
 			if (set == hit_sets_obj.bothsides || set == hit_sets_obj.bothsides_hand || set == hit_sets_obj.bothsides_foot || set == hit_sets_obj.bothsides_foot_defensive) {
 				if (sentence.length > 1) sentence.prefix = "Saman puolen";
 			}
-			
+
 			return sentence;
 		}
 
@@ -233,7 +244,7 @@
 	valmentaja.addSayer( new SentenceSayer.ConsoleLog() );
 
 	valmentaja.setSpeed( 2500 ); // 2.5s
-	
+
 
 	setTimeout(() => {
 
@@ -242,7 +253,7 @@
 		var sentences_timeout_seconds_input = document.getElementById( "sentences_timeout_seconds" ) || {};
 		var sets_select                     = document.getElementById( "sets" ) || {};
 
-		
+
 		var default_settings = {
 			timeout_time_seconds      : 60,
 			sentences_timeout_seconds : 2.5,
@@ -272,7 +283,7 @@
 		}
 
 		training_form.onsubmit = async function( event ) {
-			
+
 			event.preventDefault();
 
 			var nsettings = {}, elem;
@@ -285,12 +296,12 @@
 			elem = training_form.querySelector( "[name=sets]" );
 			if (elem) {
 				try {
-					settings.sets = Array.prototype.slice.call( training_form.querySelectorAll( "[name=sets] option:checked" ), 0) .map(function(v,i,a) { 
-						return v.value; 
+					settings.sets = Array.prototype.slice.call( training_form.querySelectorAll( "[name=sets] option:checked" ), 0) .map(function(v,i,a) {
+						return v.value;
 					});
 				} catch (error) {
 					alert( error.toString() );
-					
+
 					console.log( error );
 
 					settings.sets = buildSentence.set_keys;
@@ -319,31 +330,31 @@
 			} catch (error) { console.error( error ); }
 
 			/*********/
-			
+
 			var { sets: set_keys, timeout_time_seconds, sentences_timeout_seconds, sentences_min_length, sentences_max_length } = settings;
-			
-	
+
+
 			if (timeout_time_seconds) setTimeout( async () => {
-	
+
 				await valmentaja.stop();
-	
+
 				alert( "Aika loppui!" );
 
 				location.reload();
-	
+
 			}, timeout_time_seconds * 1000 );
-	
-	
+
+
 			if (sentences_timeout_seconds) valmentaja.setSpeed( sentences_timeout_seconds * 1000 );
 
 			/*********/
 
 			valmentaja.sentenceGenerator = () => buildSentence( sentences_max_length, sentences_min_length, [], set_keys );
-	
+
 			valmentaja.start();
-	
+
 			await initWakeLock();
-	
+
 			/***** DOM-manipulointi *****/
 			document.body.classList.add( "running" );
 			Array.prototype.slice.call( training_form.querySelectorAll( "input, select" ), 0 ).forEach( elem => ( elem.disabled = true ));
@@ -351,18 +362,18 @@
 
 			return false;
 		};
-	
-	
+
+
 		async function initValmentaja() {
 		}
-	
-	
+
+
 		/** @see {@link https://developer.mozilla.org/en-US/docs/Web/API/Screen_Wake_Lock_API} */
 		async function initWakeLock() {
-	
+
 			// Create a reference for the Wake Lock.
 			var wakeLock = null;
-	
+
 			// create an async function to request a wake lock
 			try {
 				wakeLock = await navigator.wakeLock.request('screen');
@@ -375,4 +386,3 @@
 	});
 
 })( this );
-
