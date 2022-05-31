@@ -1,27 +1,29 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
-import Valmentaja from '../classes/Valmentaja';
+import { Container, Navbar, Nav, Button } from 'react-bootstrap';
+
 import SentenceSayer from '../classes/SentenceSayer';
 import SentenceBuilder from '../classes/SentenceBuilder';
 
-var valmentaja = new Valmentaja();
-valmentaja.addSayer( new SentenceSayer.SpeechApi() );
-valmentaja.addSayer( new SentenceSayer.ConsoleLog() );
-
-export default function({ settings }) {
+export default function Tainer({ settings, valmentaja }) {
 
 	const { sentences_timeout_seconds, sentences_max_length, sentences_min_length, sets } = settings;
 
 	const [ sentenceString, setSentenceString ] = useState();
 
+	const [ isRunning, setIsRunning ] = useState( valmentaja.running );
+
+	const refreshIsRunning = useCallback(() => setIsRunning( valmentaja.running ), [ valmentaja, setIsRunning ]);
+
+	const restartValmentaja = useCallback(() => { valmentaja.start(); refreshIsRunning(); }, [ valmentaja, refreshIsRunning ]);
+	const stopValmentaja    = useCallback(() => { valmentaja.stop();  refreshIsRunning(); }, [ valmentaja, refreshIsRunning ]);
+
 	useEffect(() => {
 		valmentaja.addSayer( new SentenceSayer.Callback(( sentence, string ) => {
 			setSentenceString( string );
 		}));
-	}, [ setSentenceString ])
-
-
+	}, [ valmentaja, setSentenceString ]);
 
 	useEffect(() => {
 		valmentaja.setSpeed( 2500 ); // 2.5s
@@ -35,12 +37,21 @@ export default function({ settings }) {
 		valmentaja.sentenceGenerator = sentenceBuilder.getGenerator();
 
 		valmentaja.start();
+		refreshIsRunning();
 
-	}, [ settings ])
+	}, [ valmentaja, refreshIsRunning, sentences_timeout_seconds, sentences_max_length, sentences_min_length, sets ]);
 
 	return (
 		<>
-			{sentenceString}
+			<h1 className="mt-5 text-center">{sentenceString}</h1>
+			<Navbar fixed="bottom">
+				<Container fluid>
+					<Nav className="justify-content-end">{ isRunning ?
+						(<Button variant="warning" onClick={stopValmentaja}>Pysäytä ⨯</Button>) :
+						(<Button variant="primary" onClick={restartValmentaja}>Jatka</Button >)
+					}</Nav>
+				</Container>
+			</Navbar>
 		</>
 	)
 }

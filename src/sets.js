@@ -210,8 +210,30 @@ const hit_sets_keys = Object.keys( hit_sets_obj );
 
 const hit_sets_arr = hit_sets_keys.map( key => hit_sets_obj[key] );
 
+const hit_sets_titles = {
+	"bothsides_hand"           : "Kummankin puolen kädet",
+	"frontside_hand"           : "Etukädet",
+	"backside_hand"            : "Takakädet",
+	"noside_hand"              : "Kädet, ei puolijakoa",
+	"bothsides_foot"           : "Kummankin puolen jalat",
+	"frontside_foot"           : "Etujalat",
+	"backside_foot"            : "Takajalat",
+	"backside_foot_defensive"  : "Puolustavat kummatkin jalat",
+	"frontside_foot_defensive" : "Puolustavat etujalat",
+	"bothsides_foot_defensive" : "Puolustavat takajalat",
+	"noside_hand_defensive"    : "Puolustavat kädet",
+	"defensives"               : "Puolustavat",
+	"noside_defensive"         : "Puolustavat, ei puolijakoa",
+	"bothsides"                : "Etupuoli",
+	"frontside"                : "Etupuoli",
+	"backside"                 : "Takapuoli",
+	"hands"                    : "Kädet",
+	"feets"                    : "Jalat"
+};
+
 export {
 	hit_sets_obj,
 	hit_sets_arr,
-	hit_sets_keys
+	hit_sets_keys,
+	hit_sets_titles
 };

@@ -1,9 +1,11 @@
 import { memo, useCallback, createContext, useContext, useEffect, useRef, useState } from 'react';
 
-import { hit_sets_keys } from '../sets';
+import { hit_sets_keys, hit_sets_titles } from '../sets';
 
-import { Container, Row, Col } from 'react-bootstrap';
+import { Container, Row, Col, Form, Button } from 'react-bootstrap';
 //import { useSettings } from '../settings';
+
+import Settings from '../classes/Settings';
 
 const default_settings = {
 	timeout_time_seconds: 120,
@@ -12,14 +14,6 @@ const default_settings = {
 	sentences_max_length: 3,
 	sets: [ ...hit_sets_keys ]
 };
-
-var original_settings = { ...default_settings };
-
-try {
-	var settings = JSON.parse( window.localStorage.getItem( "valmentaja-settings-v1" ) || "{}" );
-	console.info( "Loaded settings", settings );
-	original_settings = { ...original_settings, ...settings };
-} catch (error) { console.error( error ); }
 
 const SettingsContext = createContext();
 
@@ -51,15 +45,15 @@ const SettingsFormNumberInputRow = memo(function SettingsFormNumberInputRow({ on
 
 	const { settings } = useContext( SettingsContext );
 
+	const id = "settings_form__" + name;
+
 	return (
-		<Row>
-			<Col>
-				<SettingsFormRowLabel id={"settings_form__" + name} label={label} />
+		<Form.Group as={Row} className="mb-3">
+			<Form.Label column={true} md={4} htmlFor={id}>{label}</Form.Label>
+			<Col md={8}>
+				<Form.Control id={id} value={settings[ name ] || ""} onChange={onChange} type="number" id={"settings_form__" + name} name={name} min={min || "0"} max={max} step={step || "1"} />
 			</Col>
-			<Col>
-				<input className="w-100" value={settings[ name ] || ""} onChange={onChange} type="number" id={"settings_form__" + name} name={name} min={min || "0"} max={max} step={step || "1"} />
-			</Col>
-		</Row>
+		</Form.Group>
 	);
 });
 
@@ -67,28 +61,26 @@ const SettingsFormMultiselectInputRow = memo(function SettingsFormMultiselectInp
 
 	const { settings } = useContext( SettingsContext );
 
+	const id = "settings_form__" + name;
+
 	const onSelectChange = e => {
 		const value = Array.prototype.map.call( e.target.querySelectorAll( "option:checked" ), item => item.value );
 		onChange({ target: { name, value } });
 	};
 
 	return (
-		<Row>
-			<Col>
-				<SettingsFormRowLabel id={"settings_form__" + name} label={label} />
+		<Form.Group as={Row} className="mb-3">
+			<Form.Label column={true} md={4} htmlFor={id}>{label}</Form.Label>
+			<Col md={8}>
+				<Form.Select size="md" id={id} name={name} value={settings[ name ] || []} onChange={onSelectChange} multiple>{options}</Form.Select>
 			</Col>
-			<Col>
-				<select className="w-100" id={"settings_form__" + name} name={name} value={settings[ name ] || []} onChange={onSelectChange} multiple>
-					{options}
-				</select>
-			</Col>
-		</Row>
+		</Form.Group>
 	);
 });
 
-export default function SettingsForm({ onChange, onSubmit }) {
+export default function SettingsForm({ initial_settings, onChange, onSubmit }) {
 
-	var [ settings, setSettings ] = useState( original_settings );
+	const [ settings, setSettings ] = useState( initial_settings );
 
 	const handleSettingChange = useCallback( event => {
 
@@ -102,39 +94,45 @@ export default function SettingsForm({ onChange, onSubmit }) {
 		onChange({ ...default_settings, ...validateSettings( settings ) })
 	}, [ ]);
 
+
+
+
 	return (
-		<SettingsContext.Provider value={{ default_settings, settings}}>
-			<Container>
-				<form id="training-form" onSubmit={ evt => onSubmit( evt, validateSettings( settings ))}>
-					<SettingsFormNumberInputRow
-						label="timeout_time_seconds"
-						onChange={handleSettingChange}
-						name="timeout_time_seconds" />
-					<SettingsFormNumberInputRow
-						label="sentences_timeout_seconds"
-						step="0.1"
-						onChange={handleSettingChange}
-						name="sentences_timeout_seconds" />
-					<SettingsFormNumberInputRow
-						label="sentences_min_length"
-						onChange={handleSettingChange}
-						name="sentences_min_length" />
-					<SettingsFormNumberInputRow
-						label="sentences_max_length"
-						onChange={handleSettingChange}
-						name="sentences_max_length" />
-					<SettingsFormMultiselectInputRow
-						label="Sets"
-						options={hit_sets_keys.map( key => (<option key={key} value={key}>{key}</option>) )}
-						onChange={handleSettingChange}
-						name="sets" />
-					<div className="row">
-						<div className="col-xs-12">
-							<input type="submit" style={{'fontSize':'1em'}} value="Aloita!" />
-						</div>
-					</div>
-				</form>
-			</Container>
+		<SettingsContext.Provider value={{ default_settings, settings }}>
+			<Form onSubmit={ evt => onSubmit( evt, validateSettings( settings ))}>
+				<SettingsFormNumberInputRow
+					label="Harjoituksen kesto, sekunteja"
+					onChange={handleSettingChange}
+					name="timeout_time_seconds" />
+				<SettingsFormNumberInputRow
+					label="Sarjojen väli, sekunteja"
+					step="0.1"
+					onChange={handleSettingChange}
+					name="sentences_timeout_seconds" />
+				<SettingsFormNumberInputRow
+					label="Sarjan minimipituus"
+					onChange={handleSettingChange}
+					name="sentences_min_length" />
+				<SettingsFormNumberInputRow
+					label="Sarjan maksimipituus"
+					onChange={handleSettingChange}
+					name="sentences_max_length" />
+				<SettingsFormMultiselectInputRow
+					label="Käytettävät sarjakirjastot"
+					options={
+						hit_sets_keys.map( key => (
+							<option key={key} value={key}>{ hit_sets_titles[key] || key }</option>
+						))
+					}
+					onChange={handleSettingChange}
+					name="sets" />
+
+				<Row>
+					<Col>
+						<Button className="float-end" type="submit">Aloita</Button>
+					</Col>
+				</Row>
+			</Form>
 		</SettingsContext.Provider>
 	);
 }
