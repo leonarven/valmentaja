@@ -36,19 +36,19 @@ export default function Tainer({ settings, valmentaja }) {
 
 		valmentaja.sentenceGenerator = sentenceBuilder.getGenerator();
 
-		valmentaja.start();
-		refreshIsRunning();
-
 	}, [ valmentaja, refreshIsRunning, sentences_timeout_seconds, sentences_max_length, sentences_min_length, sets ]);
 
+	useEffect(() => {
+		refreshIsRunning();
+	});
 	return (
 		<>
 			<h1 className="mt-5 text-center">{sentenceString}</h1>
 			<Navbar fixed="bottom">
-				<Container fluid>
-					<Nav className="justify-content-end">{ isRunning ?
+				<Container fluid className="justify-content-center">
+					<Nav>{ isRunning ?
 						(<Button variant="warning" onClick={stopValmentaja}>Pysäytä ⨯</Button>) :
-						(<Button variant="primary" onClick={restartValmentaja}>Jatka</Button >)
+						(<Button variant="primary" onClick={restartValmentaja}>Aloita!</Button >)
 					}</Nav>
 				</Container>
 			</Navbar>
