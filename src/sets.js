@@ -191,6 +191,9 @@ bothsides_foot_defensive( "työntö polvella");
 frontside_foot_defensive( "työntö etujalan polvella");
 backside_foot_defensive(  "työntö takajalan polvella");
 
+bothsides_foot_defensive( "pysäri josta kiinni napatun jalan irrotus", 2 );
+bothsides_foot_defensive( "kiertopotku josta kiinni napatun jalan irrotus", 2 );
+
 /***********/
 
 hit_sets_obj.bothsides = [ ...hit_sets_obj.bothsides_hand, ...hit_sets_obj.bothsides_foot, ...hit_sets_obj.bothsides_foot_defensive ];
