@@ -1,15 +1,13 @@
 {
   "files": {
     "main.css": "/valmentaja/static/css/main.38be36b0.css",
-    "main.js": "/valmentaja/static/js/main.5b654d6c.js",
-    "static/js/787.e090e9f5.chunk.js": "/valmentaja/static/js/787.e090e9f5.chunk.js",
+    "main.js": "/valmentaja/static/js/main.a24ed029.js",
     "index.html": "/valmentaja/index.html",
     "main.38be36b0.css.map": "/valmentaja/static/css/main.38be36b0.css.map",
-    "main.5b654d6c.js.map": "/valmentaja/static/js/main.5b654d6c.js.map",
-    "787.e090e9f5.chunk.js.map": "/valmentaja/static/js/787.e090e9f5.chunk.js.map"
+    "main.a24ed029.js.map": "/valmentaja/static/js/main.a24ed029.js.map"
   },
   "entrypoints": [
     "static/css/main.38be36b0.css",
-    "static/js/main.5b654d6c.js"
+    "static/js/main.a24ed029.js"
   ]
 }
